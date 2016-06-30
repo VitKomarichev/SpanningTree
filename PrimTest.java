@@ -1,22 +1,18 @@
 import junit.framework.Assert;
 import org.junit.Test;
-
 import java.io.File;
 import java.util.ArrayList;
-
-/**
- * Created by Darkrengarius on 06.06.2016.
- */
 
 public class PrimTest
 {
     @Test
     public void testPrim()
     {
-        String graphFile = "src\\prim.txt";
+        String graphFile = "src\\input prim.txt";
         ArrayList<ArrayList<Integer>> testMST = new ArrayList<>();
         int testSize = 7;
-        for (int i = 0; i < testSize; i++) {
+        for (int i = 0; i < testSize; i++)
+        {
             testMST.add(new ArrayList<>());
         }
 
