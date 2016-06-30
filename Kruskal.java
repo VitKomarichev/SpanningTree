@@ -43,42 +43,56 @@ public class Kruskal
         }
     }
 
-    public void Kruskal() {
+    public void Kruskal()
+    {
         int size = allEdges.size();
-        for (int i=0; i<size; i++) {
+        for (int i = 0; i < size; i++)
+        {
             Edge curEdge = allEdges.first();
-            if (allEdges.remove(curEdge)) {
-                if (nodesAreInDifferentSets(curEdge.v1, curEdge.v2)) {
+            if (allEdges.remove(curEdge))
+            {
+                if (nodesAreInDifferentSets(curEdge.v1, curEdge.v2))
+                {
                     HashSet src, dst;
                     int dstHashSetIndex;
-                    if (nodes.get(curEdge.v1).size() > nodes.get(curEdge.v2).size()) {
+                    if (nodes.get(curEdge.v1).size() > nodes.get(curEdge.v2).size())
+                    {
                         src = nodes.get(curEdge.v2);
                         dst = nodes.get(dstHashSetIndex = curEdge.v1);
-                    } else {
+                    }
+                    else
+                    {
                         src = nodes.get(curEdge.v1);
                         dst = nodes.get(dstHashSetIndex = curEdge.v2);
                     }
 
                     Object srcArray[] = src.toArray();
                     int transferSize = srcArray.length;
-                    for (int j = 0; j < transferSize; j++) {
-                        if (src.remove(srcArray[j])) {
+                    for (int j = 0; j < transferSize; j++)
+                    {
+                        if (src.remove(srcArray[j]))
+                        {
                             dst.add(srcArray[j]);
                             nodes.set((Integer) srcArray[j], nodes.get(dstHashSetIndex));
-                        } else {
+                        }
+                        else
+                        {
                             System.out.println("Something wrong: set union");
                             System.exit(1);
                         }
                     }
                     allNewEdges.add(curEdge);
                 }
-            } else {
+            }
+            else
+            {
                 System.out.println("TreeSet should have contained this element!!");
                 System.exit(1);
             }
         }
 
-        while (!allNewEdges.isEmpty()) {
+        while (!allNewEdges.isEmpty())
+        {
             Edge e = allNewEdges.get(0);
             mst.get(e.v1).add(e.v2);
             mst.get(e.v2).add(e.v1);
@@ -96,12 +110,13 @@ public class Kruskal
         return(!nodes.get(a).equals(nodes.get(b)));
     }
 
-    public void printTree()
+    public void Print_Tree()
     {
         System.out.println(mst);
     }
 
-    class Edge implements Comparator {
+    class Edge implements Comparator
+    {
         public int v1, v2, weight;
 
         public Edge() {}
