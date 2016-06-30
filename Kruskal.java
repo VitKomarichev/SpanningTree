@@ -1,78 +1,143 @@
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
+import java.util.*;
 
-/**
- * Created by Vitalik on 29.06.2016.
- */
-
-class Kruskal
+public class Kruskal
 {
-    class Edge
-    {
-        int v1;
-        int v2;
-        int weight;
-    }
-
-    int size_graph;
-    int graph[][];
     private final static int INF = -1;
 
-    Kruskal(Graph g)
-    {
-        size_graph = g.size_graph;
-        graph = new int [size_graph][size_graph];
-        for (int i = 0; i < size_graph; i++)
-            for(int j = 0; j < size_graph; j++)
-                graph[i][j] = g.graph[i][j];
-    }
+    private ArrayList<HashSet<Integer>> nodes;
+    private TreeSet<Edge> allEdges;
+    private ArrayList<Edge> allNewEdges;
+    private ArrayList<ArrayList<Integer>> mst;
 
-    class Comp implements Comparator<Edge>
+    public Kruskal(int size_graph, int[][] graph)
     {
-        @Override
-        public int compare(Edge o1, Edge o2)
+        nodes = new ArrayList<>();
+        allEdges = new TreeSet(new Edge());
+        allNewEdges = new ArrayList<>();
+        mst = new ArrayList<>();
+
+        for (int i = 0; i < size_graph; i++)
         {
-            if (o1.weight < o2.weight)
-                return -1;
-            else if (o1.weight == o2.weight)
-                return 0;
-            else
-                return 1;
+            nodes.add(null);
+            mst.add(new ArrayList<>());
         }
-    }
 
-    ArrayList<Edge> Create_List()
-    {
-        ArrayList<Edge> list = new ArrayList<Edge>();
-        for (int i = 0; i < size_graph; i++)
-            for (int j = i + 1; j < size_graph; j++)
+        for (int i = 0; i < graph.length; i++)
+        {
+            for (int j = 0; j < graph[i].length; j++)
             {
-                if (graph[i][j] != -1)
-                {
-                    Edge e = new Edge();
-                    e.v1 = i;
-                    e.v2 = j;
-                    e.weight = graph[i][j];
-                    list.add(e);
+                if (graph[i][j] != INF) {
+                    allEdges.add(new Edge(i, j, graph[i][j]));
+
+                    if (nodes.get(i) == null) {
+                        nodes.set(i, new HashSet<>());
+                        nodes.get(i).add(i);
+                    }
+
+                    if (nodes.get(j) == null) {
+                        nodes.set(j, new HashSet<>());
+                        nodes.get(j).add(j);
+                    }
                 }
             }
-        list.sort(new Comp());
-        return list;
+        }
     }
 
-    public void Kruskal()
-    {
-        HashSet<Integer> subgraph = new HashSet <Integer>();
-        for (int i = 0; i < size_graph; i++)
-        {
-            subgraph.add(i);
-        }
-        ArrayList<Edge> edges_list = Create_List();
-        for (int i = 0; i < size_graph; i++)
-            for (int j = 0; j < size_graph; j++)
-            {
+    public void Kruskal() {
+        int size = allEdges.size();
+        for (int i=0; i<size; i++) {
+            Edge curEdge = allEdges.first();
+            if (allEdges.remove(curEdge)) {
+                if (nodesAreInDifferentSets(curEdge.v1, curEdge.v2)) {
+                    HashSet src, dst;
+                    int dstHashSetIndex;
+                    if (nodes.get(curEdge.v1).size() > nodes.get(curEdge.v2).size()) {
+                        src = nodes.get(curEdge.v2);
+                        dst = nodes.get(dstHashSetIndex = curEdge.v1);
+                    } else {
+                        src = nodes.get(curEdge.v1);
+                        dst = nodes.get(dstHashSetIndex = curEdge.v2);
+                    }
 
+                    Object srcArray[] = src.toArray();
+                    int transferSize = srcArray.length;
+                    for (int j = 0; j < transferSize; j++) {
+                        if (src.remove(srcArray[j])) {
+                            dst.add(srcArray[j]);
+                            nodes.set((Integer) srcArray[j], nodes.get(dstHashSetIndex));
+                        } else {
+                            System.out.println("Something wrong: set union");
+                            System.exit(1);
+                        }
+                    }
+                    allNewEdges.add(curEdge);
+                }
+            } else {
+                System.out.println("TreeSet should have contained this element!!");
+                System.exit(1);
             }
+        }
+
+        while (!allNewEdges.isEmpty()) {
+            Edge e = allNewEdges.get(0);
+            mst.get(e.v1).add(e.v2);
+            mst.get(e.v2).add(e.v1);
+            allNewEdges.remove(e);
+        }
+    }
+
+    public ArrayList<ArrayList<Integer>> getMST()
+    {
+        return mst;
+    }
+
+    private boolean nodesAreInDifferentSets(int a, int b)
+    {
+        return(!nodes.get(a).equals(nodes.get(b)));
+    }
+
+    public void printTree()
+    {
+        System.out.println(mst);
+    }
+
+    class Edge implements Comparator {
+        public int v1, v2, weight;
+
+        public Edge() {}
+
+        public Edge(int v1, int v2, int weight)
+        {
+            this.v1= v1;
+            this.v2 = v2;
+            this.weight = weight;
+        }
+
+        public int compare(Object o1, Object o2)
+        {
+            int weight1 = ((Edge) o1).weight;
+            int weight2 = ((Edge) o2).weight;
+            int v1_1 = ((Edge) o1).v1;
+            int v1_2 = ((Edge) o2).v1;
+            int v2_1 = ((Edge) o1).v2;
+            int v2_2 = ((Edge) o2).v2;
+
+            if (weight1 < weight2)
+                return -1;
+            else if (weight1 == weight2 && v1_1 == v1_2 && v2_1 == v2_2)
+                return 0;
+            else if (weight1 == weight2)
+                return -1;
+            else if (weight1 > weight2)
+                return 1;
+            else
+                return 0;
+        }
+
+        public boolean equals(Object obj)
+        {
+            Edge e = (Edge) obj;
+            return (weight == e.weight && v1 == e.v1 && v2 == e.v2);
+        }
     }
 }
