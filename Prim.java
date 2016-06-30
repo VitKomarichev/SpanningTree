@@ -10,6 +10,7 @@ public class Prim
     int size_graph;
     int graph[][];
     private final static int INF = -1;
+    private ArrayList<ArrayList<Integer>> mst;
     ArrayList <ArrayList<Integer>> min_spaning_tree = new ArrayList <ArrayList <Integer>>();
     ArrayList <Integer> min_spaning_tree_weight = new ArrayList <Integer>();
 
@@ -20,6 +21,12 @@ public class Prim
         for (int i = 0; i < size_graph; i++)
             for(int j = 0; j < size_graph; j++)
                 graph[i][j] = g.graph[i][j];
+        mst = new ArrayList<>();
+    }
+
+    public ArrayList<ArrayList<Integer>> getMST()
+    {
+        return mst;
     }
 
     private int min(HashSet<Integer> Q)
@@ -66,7 +73,8 @@ public class Prim
             int v;
             v = min(Q);
             Q.remove(v);
-            if (Q.isEmpty()) {
+            if (Q.isEmpty())
+            {
                 break;
             }
             for (int i = 0; i < size_graph; i++)
