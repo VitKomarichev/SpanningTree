@@ -1,10 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashSet;
 
-/**
- * Created by Vitalik on 29.06.2016.
- */
-
 public class Prim
 {
     int size_graph;
