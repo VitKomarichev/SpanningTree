@@ -29,6 +29,11 @@ class Boruvka
         this.graph = graph;
     }
 
+    public ArrayList<ArrayList<Integer>> getMST()
+    {
+    return mst;
+    }
+
     private int getClosestVertex (int v)
     {
         int res = INF;
