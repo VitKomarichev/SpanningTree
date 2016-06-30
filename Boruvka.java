@@ -354,7 +354,7 @@ class Boruvka
         }
     }
 
-    public void printTree()
+    public void Print_Tree()
     {
         System.out.println(mst);
     }
